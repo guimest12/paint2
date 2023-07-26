@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quadro de Desenho Interativo</title>
+  <style>
+    /* Estilo para o fundo do site */
+    body {
+      background-image: url('caminho/para/seu/fundo.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Estilo para o quadro branco */
+    #quadro-container {
+      width: 90vmin; /* Quadrado responsivo com base no tamanho da viewport */
+      max-width: 500px; /* Largura máxima para o quadro */
+      margin: 0 auto; /* Centralizar o quadro na tela */
+      background-color: white;
+      border: 1px solid black;
+      cursor: crosshair;
+    }
+
+    #quadro {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Estilos responsivos para dispositivos móveis */
+    @media screen and (max-width: 768px) {
+      #quadro-container {
+        width: 90vmin; /* Quadrado responsivo com base no tamanho da viewport */
+        height: 90vmin; /* Quadrado responsivo com base no tamanho da viewport */
+        max-width: none;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Quadro de Desenho Interativo</h1>
+  
+  <div id="quadro-container">
+    <canvas id="quadro" width="500" height="500"></canvas>
+  </div>
+
+  <h2>Opções de Desenho</h2>
+  <label for="cor">Cor do Pincel:</label>
+  <input type="color" id="cor" value="#000000">
+
+  <label for="tamanho">Tamanho do Traço:</label>
+  <input type="range" id="tamanho" min="1" max="20" value="5">
+
+  <script>
+    const quadro = document.getElementById('quadro');
+    const ctx = quadro.getContext('2d');
+    let desenhando = false;
+    let corPincel = '#000000';
+    let tamanhoTraço = 5;
+
+    quadro.addEventListener('mousedown', (event) => {
+      desenhando = true;
+      desenhar(event.clientX - quadro.offsetLeft, event.clientY - quadro.offsetTop);
+    });
+
+    quadro.addEventListener('touchstart', (event) => {
+      desenhando = true;
+      const touch = event.touches[0];
+      desenhar(touch.clientX - quadro.offsetLeft, touch.clientY - quadro.offsetTop);
+    });
+
+    quadro.addEventListener('mousemove', (event) => {
+      if (desenhando) {
+        desenhar(event.clientX - quadro.offsetLeft, event.clientY - quadro.offsetTop);
+      }
+    });
+
+    quadro.addEventListener('touchmove', (event) => {
+      event.preventDefault();
+      if (desenhando) {
+        const touch = event.touches[0];
+        desenhar(touch.clientX - quadro.offsetLeft, touch.clientY - quadro.offsetTop);
+      }
+    });
+
+    quadro.addEventListener('mouseup', () => {
+      desenhando = false;
+    });
+
+    quadro.addEventListener('touchend', () => {
+      desenhando = false;
+    });
+
+    function desenhar(x, y) {
+      ctx.fillStyle = corPincel;
+      ctx.fillRect(x, y, tamanhoTraço, tamanhoTraço);
+    }
+
+    // Função para atualizar a cor do pincel
+    document.getElementById('cor').addEventListener('change', (event) => {
+      corPincel = event.target.value;
+    });
+
+    // Função para atualizar o tamanho do traço
+    document.getElementById('tamanho').addEventListener('change', (event) => {
+      tamanhoTraço = event.target.value;
+    });
+  </script>
+</body>
+</html>
